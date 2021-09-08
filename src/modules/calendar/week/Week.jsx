@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {memo, useEffect} from 'react';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import {SmartLinkScrollbars} from '@smart-link/core';
 import {Divider, Paper} from '@smart-link/core/material-ui';
-import WeekHeader from './components/WeekHeader';
-import TimeLine from './components/TimeLine';
-import {getTopOffsetByTime, getWeekDayList} from './utils';
-import useTopByNowTime from './hooks/useTopByNowTime';
+import {getWeekDayList} from '../utils';
+import useTopByNowTime from '../hooks/useTopByNowTime';
+import WeekHeader from '../components/WeekHeader';
+import TimeLine from '../components/TimeLine';
 
-const OneDayView = () => {
+const weekView = memo(props => {
     const classes = useStyles();
 
     const {dayUtils} = useDayUtils();
@@ -44,7 +44,7 @@ const OneDayView = () => {
             </SmartLinkScrollbars>
         </div>
     );
-};
+});
 
 const useStyles = makeAppStyles(
     theme => ({
@@ -148,7 +148,7 @@ const useStyles = makeAppStyles(
             },
         },
     }),
-    {name: 'OneDayView'},
+    {name: 'weekView'},
 );
 
-export default OneDayView;
+export default weekView;

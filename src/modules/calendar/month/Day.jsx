@@ -17,7 +17,7 @@ const MonthDay = memo(props => {
 
     return (
         <div className={dayClassName} {...restProp}>
-            {!today && dayUtils.format(day, 'dayOfMonth') === '1' ? (
+            {!today && dayUtils.isSameDay(day, dayUtils.startOfMonth(day)) ? (
                 <span>{`${dayUtils.format(day, 'monthShort')}${dayUtils.format(day, 'dayOfMonth')}日`}</span>
             ) : (
                 <span>{dayUtils.format(day, 'dayOfMonth')}</span>

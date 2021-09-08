@@ -1,38 +1,29 @@
 import React from 'react';
 import {makeAppStyles} from '@smart-link/context';
-import {Divider} from '@smart-link/core/material-ui';
+import clsx from 'clsx';
+import {timeLineArray} from '../constants';
+// eslint-disable-next-line import/named
+import {calcHiddenOffset} from '../utils';
 
 const TimeLine = React.memo(props => {
     const classes = useStyles();
+
+    const {text, top} = props;
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.timeline}>
                 <div className="wrapper">
                     <div className={classes.content}>
-                        <span className="calendar-timeline-slot">01:00</span>
-                        <span className="calendar-timeline-slot">02:00</span>
-                        <span className="calendar-timeline-slot">03:00</span>
-                        <span className="calendar-timeline-slot">04:00</span>
-                        <span className="calendar-timeline-slot">05:00</span>
-                        <span className="calendar-timeline-slot">06:00</span>
-                        <span className="calendar-timeline-slot">07:00</span>
-                        <span className="calendar-timeline-slot">08:00</span>
-                        <span className="calendar-timeline-slot">09:00</span>
-                        <span className="calendar-timeline-slot">10:00</span>
-                        <span className="calendar-timeline-slot">11:00</span>
-                        <span className="calendar-timeline-slot">12:00</span>
-                        <span className="calendar-timeline-slot">13:00</span>
-                        <span className="calendar-timeline-slot">14:00</span>
-                        <span className="calendar-timeline-slot">15:00</span>
-                        <span className="calendar-timeline-slot">16:00</span>
-                        <span className="calendar-timeline-slot">17:00</span>
-                        <span className="calendar-timeline-slot">18:00</span>
-                        <span className="calendar-timeline-slot">19:00</span>
-                        <span className="calendar-timeline-slot">20:00</span>
-                        <span className="calendar-timeline-slot">21:00</span>
-                        <span className="calendar-timeline-slot">22:00</span>
-                        <span className="calendar-timeline-slot">23:00</span>
+                        {timeLineArray.map((hours, i) => (
+                            <span key={hours} className={clsx({[classes.hidden]: calcHiddenOffset(i + 1, top)})}>
+                                {hours}
+                            </span>
+                        ))}
                     </div>
+                    <span className="timeline-now" style={{top, display: 'block'}}>
+                        {text}
+                    </span>
                 </div>
             </div>
         </div>
@@ -44,6 +35,19 @@ const useStyles = makeAppStyles(
         wrapper: {
             overflow: 'hidden',
             flex: '0 0 auto',
+            '&:after': {
+                content: ' ',
+                display: 'block',
+                width: 1,
+                height: '100%',
+                overflow: 'hidden',
+                bottom: 0,
+                left: 0,
+                backgroundColor: theme.palette.divider,
+                position: 'absolute',
+                transformOrigin: 'left top',
+                zIndex: 1,
+            },
         },
         timeline: {
             position: 'relative',
@@ -51,6 +55,14 @@ const useStyles = makeAppStyles(
             '&>.wrapper': {
                 display: 'flex',
                 justifyContent: 'center',
+                '&>.timeline-now': {
+                    textAlign: 'center',
+                    position: 'absolute',
+                    width: '100%',
+                    fontSize: theme.typography.body2.fontSize,
+                    color: theme.palette.error.dark,
+                    transform: 'translateY(-50%)',
+                },
             },
         },
         content: {
@@ -63,6 +75,9 @@ const useStyles = makeAppStyles(
             alignItems: 'center',
             justifyContent: 'space-around',
             position: 'relative',
+        },
+        hidden: {
+            visibility: 'hidden',
         },
     }),
     {name: 'TimeLine'},

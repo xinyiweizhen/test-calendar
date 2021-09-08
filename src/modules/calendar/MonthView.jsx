@@ -2,8 +2,9 @@ import React from 'react';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import {Paper, Divider, colors} from '@smart-link/core/material-ui';
 import clsx from 'clsx';
-import MonthDay from './components/MonthDay';
+import MonthDay from './month/MonthDay';
 import {WeekDayMapping} from './constants';
+import MonthDays from './month/MonthDays';
 
 const MonthView = () => {
     const classes = useStyles();
@@ -12,9 +13,9 @@ const MonthView = () => {
     const weekDayIndex = now.day();
     const currentMonthNumber = dayUtils.getMonth(now);
     const currentMonthWeeks = dayUtils.getWeekArray(now);
-    console.log(currentMonthWeeks);
+
     return (
-        <div className={classes.root}>
+        <div role="table" aria-label="Month View" className={classes.root}>
             <div className={classes.MouthHeader}>
                 {dayUtils.getWeekdays().map((weekDayLabel, i) => {
                     const past = i < WeekDayMapping[weekDayIndex];
@@ -35,33 +36,7 @@ const MonthView = () => {
                     );
                 })}
             </div>
-            <Paper elevation={0} square className={classes.weekRows}>
-                {currentMonthWeeks.map(week => (
-                    <div role="row" key={`week-${week[0]}`} className="week-row">
-                        <div className="week-content">
-                            <div className="day-block-wrapper">
-                                {week.map(day => (
-                                    <div key={day.toString()} className={clsx({today: dayUtils.isSameDay(day, now)})} />
-                                ))}
-                            </div>
-                            <div className="weekday-header">
-                                {week.map(day => {
-                                    const inCurrentMonth = dayUtils.getMonth(day) === currentMonthNumber;
-                                    const dayProps = {
-                                        day,
-                                        key: day.toString(),
-                                        inCurrentMonth,
-                                        today: dayUtils.isSameDay(day, now),
-                                    };
-                                    return <MonthDay {...dayProps} />;
-                                })}
-                            </div>
-                            <div />
-                        </div>
-                        <Divider />
-                    </div>
-                ))}
-            </Paper>
+            <MonthDays />
         </div>
     );
 };
@@ -72,6 +47,7 @@ const useStyles = makeAppStyles(
             display: 'flex',
             flexDirection: 'column',
             height: '100%',
+            width: '100%',
             '&>div:last-child': {
                 marginLeft: 1,
             },
@@ -133,9 +109,6 @@ const useStyles = makeAppStyles(
                             width: 1,
                             flex: 1,
                             height: '100%',
-                        },
-                        '&>.today': {
-                            backgroundColor: colors.grey[700],
                         },
                     },
                     '&> .weekday-header': {

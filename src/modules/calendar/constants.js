@@ -15,3 +15,54 @@ export const WeekDayMapping = {
     5: 4,
     6: 5,
 };
+
+export const timeLineArray = [
+    '01:00',
+    '02:00',
+    '03:00',
+    '04:00',
+    '05:00',
+    '06:00',
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00',
+];
+
+export const animationDirection = {
+    left: 'transition.slideLeftBigIn',
+    right: 'transition.slideRightBigIn',
+};
+
+/**
+ * The number of milliseconds one day.
+ *  60 * 60 * 1000 * 24
+ * @type {number}
+ */
+export const MILLISECONDS_PER_DAY = 86400000;
+/**
+ * The number of milliseconds one hour.
+ * 60 * 60 * 1000
+ * @type {number}
+ */
+export const MILLISECONDS_PER_HOUR = 3600000;
+
+/**
+ * The number of milliseconds one minutes.
+ *  60 * 1000
+ * @type {number}
+ */
+export const MILLISECONDS_PER_MINUTES = 60000;
