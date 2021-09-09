@@ -26,7 +26,7 @@ const WeekView = memo(props => {
         <div className={classes.root}>
             <WeekHeader isWeek date={currentWeek} weeks={weekList} />
             <SmartLinkScrollbars style={{width: '100%'}}>
-                <Paper className={classes.content}>
+                <Paper square className={classes.content}>
                     <TimeLine top={top} text={text} date={currentWeek} />
                     <Divider orientation="vertical" flexItem />
                     <div className={classes.columns}>
@@ -74,6 +74,9 @@ const useStyles = makeAppStyles(
             height: '100%',
             minHeight: 0,
             position: 'relative',
+            '&>div:last-child': {
+                marginLeft: 1,
+            },
         },
         header: {
             boxShadow: theme.shadows[1],
