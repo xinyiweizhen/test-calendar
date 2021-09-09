@@ -1,44 +1,59 @@
-import React, {memo, useEffect} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import {SmartLinkScrollbars} from '@smart-link/core';
 import {Divider, Paper} from '@smart-link/core/material-ui';
-import {getWeekDayList} from '../utils';
+import clsx from 'clsx';
 import useTopByNowTime from '../hooks/useTopByNowTime';
 import WeekHeader from '../components/WeekHeader';
 import TimeLine from '../components/TimeLine';
+import {getWeekDayList} from '../utils';
 
-const weekView = memo(props => {
+const WeekView = memo(props => {
     const classes = useStyles();
+
+    const {indexDate} = props;
+
+    const [currentWeek, setCurrentWeek] = useState(indexDate);
 
     const {dayUtils} = useDayUtils();
     const now = dayUtils.date();
-    const currentMonthNumber = dayUtils.getMonth(now);
-    const currentMonthWeeks = dayUtils.getWeekArray(now);
 
     const [top, text] = useTopByNowTime();
 
+    const weekList = getWeekDayList({dayUtils, selectedDate: indexDate});
+
     return (
         <div className={classes.root}>
-            <WeekHeader isWeek />
+            <WeekHeader isWeek date={currentWeek} weeks={weekList} />
             <SmartLinkScrollbars style={{width: '100%'}}>
                 <Paper className={classes.content}>
-                    <TimeLine top={top} text={text} />
+                    <TimeLine top={top} text={text} date={currentWeek} />
                     <Divider orientation="vertical" flexItem />
                     <div className={classes.columns}>
-                        <div className="columns-addon">
-                            <div className="row-line-container">
-                                {Array.from({length: 24}, (_v, i) => (
-                                    <div key={i}>
-                                        <div className="row-line-item" />
-                                        <Divider />
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="now-pointer" style={{top, display: 'block'}}>
-                                <div className="indicator" />
-                            </div>
+                        <div className="row-line-container">
+                            {Array.from({length: 24}, (_v, i) => (
+                                <div key={`line-key-${i}`}>
+                                    <div className="row-line-item" />
+                                    <Divider />
+                                </div>
+                            ))}
                         </div>
-                        <div />
+                        {weekList.map(day => (
+                            <React.Fragment key={day.toString()}>
+                                <div
+                                    className={clsx({[classes.today]: dayUtils.isSameDay(day, now)}, 'day-column')}
+                                    style={{height: 1104}}
+                                >
+                                    <div
+                                        className="now-pointer"
+                                        style={{top, display: dayUtils.isSameDay(day, now) ? 'block' : 'none'}}
+                                    >
+                                        <div className="indicator" />
+                                    </div>
+                                </div>
+                                <Divider orientation="vertical" />
+                            </React.Fragment>
+                        ))}
                     </div>
                 </Paper>
             </SmartLinkScrollbars>
@@ -106,36 +121,40 @@ const useStyles = makeAppStyles(
             display: 'flex',
             boxSizing: 'border-box',
             flex: 'auto',
-            minWidth: 0,
-            '&>.columns-addon': {
+            width: '100%',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            '&>.row-line-container': {
                 position: 'absolute',
-                left: '-5px',
+                left: 0,
                 top: 0,
                 right: 0,
-                bottom: 0,
-                overflow: 'hidden',
-                '&>.row-line-container': {
-                    position: 'absolute',
-                    left: 5,
-                    top: 0,
-                    right: 0,
-                    pointerEvents: 'none',
-                    '&>div>div': {
-                        height: 45,
-                        position: 'relative',
-                    },
+                pointerEvents: 'none',
+                '&>div>div': {
+                    height: 45,
+                    position: 'relative',
                 },
+            },
+            '& .day-column': {
+                display: 'flex',
+                flexDirection: 'column',
+                boxSizing: 'border-box',
+                position: 'relative',
+                flex: 'auto',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 '&>.now-pointer': {
                     position: 'absolute',
                     top: 0,
-                    left: 5,
+                    left: 0,
                     width: '100%',
                     height: 0,
                     pointerEvents: 'none',
-                    zIndex: 2,
+                    zIndex: theme.zIndex.drawer + 1,
                     borderTop: '1px solid',
                     borderColor: theme.palette.error.dark,
                     '&>.indicator': {
+                        display: 'none',
                         position: 'absolute',
                         width: 8,
                         height: 8,
@@ -145,10 +164,14 @@ const useStyles = makeAppStyles(
                         top: -5,
                     },
                 },
+                '&$today >.now-pointer>.indicator ': {
+                    display: 'block',
+                },
             },
         },
+        today: {},
     }),
-    {name: 'weekView'},
+    {name: 'WeekView'},
 );
 
-export default weekView;
+export default WeekView;

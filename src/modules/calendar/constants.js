@@ -16,6 +16,12 @@ export const WeekDayMapping = {
     6: 5,
 };
 
+export const views = {
+    MONTH: 'month',
+    WEEK: 'week',
+    DAY: 'day',
+};
+
 export const timeLineArray = [
     '01:00',
     '02:00',

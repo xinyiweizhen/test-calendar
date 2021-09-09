@@ -6,18 +6,12 @@ import clsx from 'clsx';
 import {getWeekDayList} from '../utils';
 
 const WeekHeader = React.memo(props => {
-    const {isWeek} = props;
+    const {isWeek, weeks} = props;
     const classes = useStyles();
-
-    const [weekDayList, setWeekDayList] = React.useState([]);
 
     const {dayUtils} = useDayUtils();
 
-    const selectedDate = dayUtils.date('2021-9-6');
-
-    React.useEffect(() => {
-        setWeekDayList(getWeekDayList({dayUtils}));
-    }, []);
+    const now = dayUtils.date();
 
     return (
         <div className={classes.root}>
@@ -29,15 +23,25 @@ const WeekHeader = React.memo(props => {
                 <div className="title-row">
                     <div className="cell-block">
                         {isWeek ? (
-                            weekDayList.map((day, i) => (
-                                <React.Fragment key={day.toString()}>
-                                    <div className={clsx(classes.headerCell, {[classes.weekly]: isWeek})}>
-                                        <div className="weekLabel">{dayUtils.format(day, 'weekdayShort')}</div>
-                                        <div className="dayLabel">{dayUtils.format(day, 'dayOfMonth')}</div>
-                                    </div>
-                                    <Divider orientation="vertical" flexItem />
-                                </React.Fragment>
-                            ))
+                            weeks.map((day, i) => {
+                                const today = dayUtils.isSameDay(day, now);
+                                const todayIndex = weeks.findIndex(d => dayUtils.isSameDay(d, now));
+                                return (
+                                    <React.Fragment key={day.toString()}>
+                                        <div
+                                            className={clsx(classes.headerCell, {
+                                                [classes.weekly]: isWeek,
+                                                [classes.today]: today,
+                                                [classes.past]: todayIndex && i < todayIndex,
+                                            })}
+                                        >
+                                            <div className="weekLabel">{dayUtils.format(day, 'weekdayShort')}</div>
+                                            <div className="dayLabel">{dayUtils.format(day, 'dayOfMonth')}</div>
+                                        </div>
+                                        <Divider orientation="vertical" flexItem />
+                                    </React.Fragment>
+                                );
+                            })
                         ) : (
                             <div className={classes.headerCell}>
                                 <div>日程管理</div>
@@ -158,8 +162,16 @@ const useStyles = makeAppStyles(
                 flex: 'none',
                 pointerEvents: 'none',
             },
+            '&$today': {
+                color: theme.palette.primary.main,
+            },
+            '&$past': {
+                color: theme.palette.grey[400],
+            },
         },
         weekly: {},
+        today: {},
+        past: {},
     }),
     {name: 'WeekHeader'},
 );

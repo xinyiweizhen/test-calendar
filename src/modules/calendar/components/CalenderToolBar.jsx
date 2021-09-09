@@ -12,6 +12,7 @@ import {
 import {makeAppStyles, withStyles} from '@smart-link/context';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import {views} from '../constants';
 
 const StyledToggleButtonGroup = withStyles(theme => ({
     grouped: {
@@ -28,6 +29,13 @@ const StyledToggleButtonGroup = withStyles(theme => ({
 
 const CalenderToolBar = React.memo(props => {
     const classes = useStyles();
+    const {view} = props;
+
+    const handleViewChange = (_event, value) => {
+        if (typeof props.onView === 'function') {
+            props.onView(value);
+        }
+    };
     return (
         <AppBar position="static" className={classes.appBar}>
             <Toolbar>
@@ -43,14 +51,14 @@ const CalenderToolBar = React.memo(props => {
                     </IconButton>
                 </div>
                 <div className={classes.paper}>
-                    <StyledToggleButtonGroup value="month" exclusive aria-label="view">
-                        <ToggleButton value="day" aria-label="day view">
+                    <StyledToggleButtonGroup onChange={handleViewChange} value={view} exclusive aria-label="view">
+                        <ToggleButton value={views.DAY} aria-label="day view">
                             日视图
                         </ToggleButton>
-                        <ToggleButton value="week" aria-label="week view">
+                        <ToggleButton value={views.WEEK} aria-label="week view">
                             周视图
                         </ToggleButton>
-                        <ToggleButton value="month" aria-label="mouth view">
+                        <ToggleButton value={views.MONTH} aria-label="mouth view">
                             月视图
                         </ToggleButton>
                     </StyledToggleButtonGroup>

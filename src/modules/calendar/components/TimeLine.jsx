@@ -1,14 +1,19 @@
 import React from 'react';
-import {makeAppStyles} from '@smart-link/context';
+import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import clsx from 'clsx';
 import {timeLineArray} from '../constants';
 // eslint-disable-next-line import/named
 import {calcHiddenOffset} from '../utils';
 
 const TimeLine = React.memo(props => {
+    const {date} = props;
     const classes = useStyles();
 
     const {text, top} = props;
+
+    const {dayUtils} = useDayUtils();
+
+    const now = dayUtils.date();
 
     return (
         <div className={classes.wrapper}>
@@ -21,7 +26,10 @@ const TimeLine = React.memo(props => {
                             </span>
                         ))}
                     </div>
-                    <span className="timeline-now" style={{top, display: 'block'}}>
+                    <span
+                        className="timeline-now"
+                        style={{top, display: dayUtils.isSameDay(date, now) ? 'block' : 'none'}}
+                    >
                         {text}
                     </span>
                 </div>

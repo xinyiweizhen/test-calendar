@@ -18,14 +18,14 @@ const MonthHeader = memo(props => {
         <div className={classes.root}>
             {dayUtils.getWeekdays().map((weekDayLabel, i) => {
                 const past = isSameMonth && i < WeekDayMapping[weekDayIndex];
-                const isWeekDay = isSameMonth && WeekDayMapping[weekDayIndex] === i;
+                const today = isSameMonth && WeekDayMapping[weekDayIndex] === i;
                 return (
                     <div
                         key={weekDayLabel}
                         className={clsx(
                             {
                                 [classes.past]: past,
-                                [classes.isWeekDay]: isWeekDay,
+                                [classes.isWeekDay]: today,
                             },
                             'week-day-label',
                         )}
@@ -63,7 +63,7 @@ const useStyles = makeAppStyles(
             '& > $past': {
                 color: theme.palette.grey[400],
             },
-            '& > $isWeekDay': {
+            '& > $today': {
                 color: theme.palette.primary.main,
             },
         },

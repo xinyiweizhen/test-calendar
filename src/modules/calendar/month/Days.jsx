@@ -14,13 +14,15 @@ const MonthDays = React.memo(props => {
 
     const {dayUtils} = useDayUtils();
 
+    const now = dayUtils.date();
+
     const renderHeadingCell = (day, _index) => {
         const inCurrentMonth = dayUtils.isSameMonth(day, currentMonth);
         const dayProps = {
             day,
             key: day.toString(),
             inCurrentMonth,
-            today: inCurrentMonth && dayUtils.isSameDay(day, currentMonth),
+            today: inCurrentMonth && dayUtils.isSameDay(day, now),
         };
         return <MonthDay {...dayProps} />;
     };
