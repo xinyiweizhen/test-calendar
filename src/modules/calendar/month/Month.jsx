@@ -2,9 +2,11 @@ import React, {memo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {makeAppStyles, useDayUtils, useEnhancedEffect} from '@smart-link/context';
 import clsx from 'clsx';
+import {SmartLinkAnimateGroup} from '@smart-link/core';
+import {Paper, Dialog, DialogTitle, DialogContent, DialogActions, Divider} from '@smart-link/core/material-ui';
 import MonthHeader from './Header';
-import MonthDays from './Days';
-import {animationDirection, WeekDayMapping} from '../constants';
+import MonthDays from './MonthDays';
+import {animationDirection} from '../constants';
 
 const MonthView = memo(props => {
     const {className, indexDate} = props;
@@ -30,7 +32,7 @@ const MonthView = memo(props => {
         setCurrentMonth(indexDate);
     }, [indexDate]);
 
-    const currentMonthWeeks = dayUtils.getWeekArray(currentMonth);
+    const weeks = dayUtils.getWeekArray(currentMonth);
 
     const onClickLeft = () => {
         setCurrentMonth(dayUtils.addMonths(currentMonth, -1));
@@ -45,7 +47,15 @@ const MonthView = memo(props => {
     return (
         <div role="grid" aria-label="Month View" className={clsx(classes.root, className)}>
             <MonthHeader currentMonth={currentMonth} />
-            <MonthDays weeks={currentMonthWeeks} currentMonth={currentMonth} />
+            <SmartLinkAnimateGroup
+                enter={{
+                    animation: animationEntry,
+                    duration: 250,
+                }}
+                className={clsx(classes.animation)}
+            >
+                <MonthDays weeks={weeks} currentMonth={currentMonth} />
+            </SmartLinkAnimateGroup>
         </div>
     );
 });
@@ -60,6 +70,12 @@ const useStyles = makeAppStyles(
             '&>div:last-child': {
                 marginLeft: 1,
             },
+        },
+        animation: {
+            flex: '0 0 auto',
+            width: '100%',
+            height: 'calc(100% - 44px)',
+            overflow: 'hidden',
         },
     }),
     {name: 'MouthView'},

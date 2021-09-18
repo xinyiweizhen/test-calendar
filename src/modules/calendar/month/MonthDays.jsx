@@ -2,200 +2,148 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import clsx from 'clsx';
-import {
-    Divider,
-    Paper,
-    Popper,
-    Portal,
-    Fade,
-    Typography,
-    ClickAwayListener,
-    Button,
-} from '@smart-link/core/material-ui';
+import {Divider, Paper, Dialog, DialogTitle, DialogContent, Typography, IconButton} from '@smart-link/core/material-ui';
+import CloseIcon from '@material-ui/icons/Close';
 import MonthDay from './MonthDay';
+import BlockCells from './BlockCells';
 
 const MonthDays = React.memo(props => {
-    /**
-     *  open of Popper
-     */
-    const [open, setOpen] = React.useState(false);
-    /**
-     *  anchorEl of Popper
-     */
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const {weeks, currentMonth, onSelectSlot} = props;
 
-    const portalContainerRef = React.useRef([]);
-
-    const [show, setShow] = React.useState(false);
+    const container = React.useRef();
 
     const classes = useStyles();
+
     const {dayUtils} = useDayUtils();
+
     const now = dayUtils.date();
-    const weekDayIndex = now.day();
-    const currentMonthNumber = dayUtils.getMonth(now);
-    const currentMonthWeeks = dayUtils.getWeekArray(now);
 
-    const [activeRow, setActiveRow] = React.useState(0);
-    const [activeCol, setActiveCol] = React.useState(0);
+    const [open, setOpen] = React.useState(false);
 
-    const handleDayClick = (event, day, row, col) => {
-        event && event.stopPropagation();
-        event && event.preventDefault();
-        const getBoundingClientRect = () => event.target.getBoundingClientRect();
-        setOpen(true);
-        setAnchorEl({
-            clientWidth: getBoundingClientRect().width,
-            clientHeight: getBoundingClientRect().height,
-            getBoundingClientRect,
-        });
-        setShow(true);
-        setActiveRow(row);
-        setActiveCol(col);
+    const renderHeadingCell = React.useCallback((day, _index) => {
+        const inCurrentMonth = dayUtils.isSameMonth(day, currentMonth);
+        const dayProps = {
+            day,
+            key: day.toString(),
+            inCurrentMonth,
+            today: inCurrentMonth && dayUtils.isSameDay(day, now),
+        };
+        return <MonthDay {...dayProps} />;
+    }, []);
+
+    const handleSelectSlot = slot => {
+        console.log(slot);
+        // setOpen(true);
     };
 
-    const handleClose = () => {
+    const handleClose = e => {
+        e && e.stopPropagation();
+        e && e.preventDefault();
         setOpen(false);
-        setShow(false);
+    };
+
+    const getContainer = () => {
+        return container.current;
     };
 
     return (
-        <Paper elevation={0} square className={classes.weekRows}>
-            {currentMonthWeeks.map((week, row) => (
-                <div
-                    role="row"
-                    key={`week-${week[0]}`}
-                    className="week-row"
-                    ref={ref => {
-                        portalContainerRef.current[row] = ref;
-                    }}
-                >
+        <Paper elevation={0} square className={classes.rows} ref={container}>
+            {weeks.map((week, rowIndex) => (
+                <div key={`week-${week[0]}`} role="row" className={classes.row}>
                     <div className="week-content">
-                        <div className="day-block-wrapper">
-                            {week.map((day, col) => (
-                                <div key={day.toString()} onClick={e => handleDayClick(e, day, row, col)} />
-                            ))}
-                        </div>
-                        <div className="weekday-header">
-                            {week.map(day => {
-                                const inCurrentMonth = dayUtils.getMonth(day) === currentMonthNumber;
-                                const dayProps = {
-                                    day,
-                                    key: day.toString(),
-                                    inCurrentMonth,
-                                    today: dayUtils.isSameDay(day, now),
-                                };
-                                return <MonthDay {...dayProps} />;
-                            })}
-                        </div>
-                        <div />
+                        <BlockCells
+                            onSelectSlot={handleSelectSlot}
+                            open={open}
+                            setOpen={setOpen}
+                            week={week}
+                            container={getContainer}
+                        />
+                        <div className="weekday-header">{week.map(renderHeadingCell)}</div>
+                        {/* TODO show event */}
                     </div>
-                    {show ? (
-                        <Portal container={portalContainerRef.current[row]}>
-                            <div className={classes.monthTransformer}>
-                                <div className="_trigger resizer fast-create-event-wrapper">
-                                    <div
-                                        className="month-transformer month-event-instance-wrapper"
-                                        style={{
-                                            top: 1,
-                                            left: `calc(${
-                                                activeRow === row
-                                                    ? (activeCol / week.length) * 100
-                                                    : (activeRow - row) * 100
-                                            }% + 5px)`,
-                                            width: `calc( ${(1 / week.length) * 100}% - 10px)`,
-                                        }}
-                                    >
-                                        <div
-                                            className="month-event-instance"
-                                            data-original-time="0"
-                                            data-start-time="1632585600"
-                                        >
-                                            <div className="summary property">添加主题</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Portal>
-                    ) : null}
                     <Divider />
                 </div>
             ))}
-            <Popper
+            <Dialog
                 open={open}
-                anchorEl={anchorEl}
-                modifiers={{
-                    flip: {
-                        enabled: true,
-                    },
-                    preventOverflow: {
-                        enabled: true,
-                        boundariesElement: 'viewport',
-                    },
-                }}
-                transition
-                placement="right"
+                aria-labelledby="scroll-dialog-title"
+                aria-describedby="scroll-dialog-description"
+                scroll="paper"
+                onBackdropClick={handleClose}
             >
-                {({TransitionProps}) => (
-                    <Fade {...TransitionProps} timeout={350}>
-                        <Paper>
-                            <Typography className={classes.typography}>The content of the Popper.</Typography>
-                            <Button color="primary" variant="contained" onClick={handleClose}>
-                                close
-                            </Button>
-                        </Paper>
-                    </Fade>
-                )}
-            </Popper>
+                <DialogTitle disableTypography className={classes.dialogTitle}>
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <Typography gutterBottom>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
+                        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </Typography>
+                    <Typography gutterBottom>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel
+                        augue laoreet rutrum faucibus dolor auctor.
+                    </Typography>
+                    <Typography gutterBottom>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque
+                        nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
+                    </Typography>
+                </DialogContent>
+            </Dialog>
         </Paper>
     );
 });
 
 const useStyles = makeAppStyles(
     theme => ({
-        weekRows: {
+        rows: {
             flex: '0 0 auto',
             width: '100%',
             display: 'flex',
             overflow: 'hidden',
-            height: 'calc(100% - 44px)',
+            height: '100%',
             flexDirection: 'column',
             position: 'relative',
-            '& > .week-row': {
+        },
+        row: {
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            position: 'relative',
+            '& > .week-content': {
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                flex: 1,
+                flex: '1 1 0%',
                 position: 'relative',
-                '& > .week-content': {
+                '&> .weekday-header': {
+                    position: 'relative',
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'column',
-                    flex: '1 1 0%',
-                    position: 'relative',
-                    '&> .day-block-wrapper': {
-                        position: 'absolute',
-                        height: '100%',
-                        width: '100%',
-                        flex: 1,
-                        display: 'flex',
-                        '&>div': {
-                            width: 1,
-                            flex: 1,
-                            height: '100%',
-                        },
-                    },
-                    '&> .weekday-header': {
-                        position: 'relative',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginBottom: 2,
-                        pointerEvents: 'none',
-                        '&>div': {},
-                    },
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 2,
+                    pointerEvents: 'none',
                 },
             },
+        },
+        dialogTitle: {
+            width: '100%',
+            height: 52,
+            boxSizing: 'border-box',
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            paddingLeft: theme.spacing(3),
+            paddingRight: theme.spacing(3),
+        },
+        closeButton: {
+            position: 'absolute',
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            color: theme.palette.grey[500],
         },
         typography: {
             width: 492,
@@ -233,5 +181,9 @@ const useStyles = makeAppStyles(
     }),
     {name: 'MouthDays'},
 );
+
+MonthDays.propTypes = {
+    weeks: PropTypes.array,
+};
 
 export default MonthDays;

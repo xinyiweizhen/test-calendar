@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-    AppBar,
-    Toolbar,
-    Button,
-    IconButton,
-    Divider,
-    Paper,
-    ToggleButton,
-    ToggleButtonGroup,
-} from '@smart-link/core/material-ui';
+import {AppBar, Toolbar, Button, IconButton, ToggleButton, ToggleButtonGroup} from '@smart-link/core/material-ui';
 import {makeAppStyles, withStyles} from '@smart-link/context';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import {useHistory, useLocation} from 'react-router';
 import {views} from '../constants';
+// eslint-disable-next-line import/named
+import {isValidView} from '../utils';
 
 const StyledToggleButtonGroup = withStyles(theme => ({
     grouped: {
@@ -31,9 +25,15 @@ const CalenderToolBar = React.memo(props => {
     const classes = useStyles();
     const {view} = props;
 
-    const handleViewChange = (_event, value) => {
-        if (typeof props.onView === 'function') {
-            props.onView(value);
+    const history = useHistory();
+    const location = useLocation();
+
+    const handleViewChange = (_event, v) => {
+        if (v !== view && isValidView(v)) {
+            history.push(location.pathname.replace(view, v));
+            if (typeof props.onViewChange === 'function') {
+                props.onViewChange(v);
+            }
         }
     };
     return (

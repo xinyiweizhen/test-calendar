@@ -25,7 +25,7 @@ const MonthHeader = memo(props => {
                         className={clsx(
                             {
                                 [classes.past]: past,
-                                [classes.isWeekDay]: today,
+                                [classes.today]: today,
                             },
                             'week-day-label',
                         )}
@@ -68,7 +68,7 @@ const useStyles = makeAppStyles(
             },
         },
         past: {},
-        isWeekDay: {},
+        today: {},
     }),
     {name: 'MouthHeader'},
 );

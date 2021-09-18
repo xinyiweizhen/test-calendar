@@ -22,6 +22,7 @@ const WeekView = memo(props => {
 
     const weekList = getWeekDayList({dayUtils, selectedDate: indexDate});
 
+    const inWeeks = dayUtils.w;
     return (
         <div className={classes.root}>
             <WeekHeader isWeek date={currentWeek} weeks={weekList} />

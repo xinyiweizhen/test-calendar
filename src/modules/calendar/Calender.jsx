@@ -2,22 +2,20 @@ import React, {useState} from 'react';
 import {SmartLinkCalendar} from '@smart-link/core';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
 import clsx from 'clsx';
-import {views} from './constants';
+import {useParams} from 'react-router-dom';
 import VIEWS from './Views';
 import CalenderToolBar from './components/CalenderToolBar';
+import {isValidView} from './utils';
+import {views} from './constants';
 
 const TestCalender = props => {
     const {className, style} = props;
 
-    const [view, setView] = useState(views.DAY);
+    const {view} = useParams();
 
     const classes = useStyles();
 
-    const onView = v => {
-        setView(v);
-    };
-
-    const View = VIEWS[view];
+    const View = getView(view);
 
     const {dayUtils} = useDayUtils();
 
@@ -27,11 +25,18 @@ const TestCalender = props => {
                 <SmartLinkCalendar calendarType="date" elevation={0} />
             </div>
             <div className={classes.content}>
-                <CalenderToolBar view={view} onView={onView} />
-                <View indexDate={dayUtils.addWeeks(dayUtils.date(), 1)} />
+                <CalenderToolBar view={view} />
+                <View indexDate={dayUtils.date()} />
             </div>
         </div>
     );
+};
+
+const getView = view => {
+    if (!isValidView(view)) {
+        return VIEWS[views.DAY];
+    }
+    return VIEWS[view];
 };
 
 const useStyles = makeAppStyles(

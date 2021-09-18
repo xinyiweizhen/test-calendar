@@ -27,7 +27,13 @@ const routes = [
     },
     {
         path: '/calender',
-        component: () => <TestCalender />,
+        exact: true,
+        render: () => <Redirect to="/calender/day" />,
+    },
+    {
+        path: ['/calender/:view'],
+        exact: true,
+        component: props => <TestCalender {...props} />,
     },
     {
         component: () => <Redirect to="/pages/errors/error-404" />,

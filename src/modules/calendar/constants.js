@@ -52,23 +52,3 @@ export const animationDirection = {
     left: 'transition.slideLeftBigIn',
     right: 'transition.slideRightBigIn',
 };
-
-/**
- * The number of milliseconds one day.
- *  60 * 60 * 1000 * 24
- * @type {number}
- */
-export const MILLISECONDS_PER_DAY = 86400000;
-/**
- * The number of milliseconds one hour.
- * 60 * 60 * 1000
- * @type {number}
- */
-export const MILLISECONDS_PER_HOUR = 3600000;
-
-/**
- * The number of milliseconds one minutes.
- *  60 * 1000
- * @type {number}
- */
-export const MILLISECONDS_PER_MINUTES = 60000;

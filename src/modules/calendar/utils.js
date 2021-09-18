@@ -1,3 +1,5 @@
+import {views} from './constants';
+
 /**
  *  Get current week list
  * @param dayUtils
@@ -45,4 +47,13 @@ export function calcHiddenOffset(hours, top) {
     const min = Math.min(cache[hours], top);
     /** 12: hidden offset */
     return max - min < 12;
+}
+
+function viewNames(_views) {
+    return !Array.isArray(_views) ? Object.values(_views) : _views;
+}
+
+export function isValidView(view) {
+    const names = viewNames(views);
+    return names.indexOf(view) !== -1;
 }
