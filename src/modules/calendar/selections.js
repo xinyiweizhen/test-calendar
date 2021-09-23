@@ -69,10 +69,10 @@ export function dateCellSelection(start, rowBox, box, slots, rtl) {
 
     if (isStartRow) {
         // select the cell under the initial point
-        // eslint-disable-next-line no-multi-assign
-        startIdx = endIdx = rtl
+        endIdx = rtl
             ? lastSlotIdx - Math.floor((start.x - rowBox.left) / cellWidth)
             : Math.floor((start.x - rowBox.left) / cellWidth);
+        startIdx = endIdx;
 
         if (isCurrentRow) {
             if (currentSlot < startIdx) startIdx = currentSlot;

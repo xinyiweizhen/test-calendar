@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchableTree from './SearchableTree';
+import Picker from '../../components/datePicker';
 
 const treeData = [
     {
@@ -76,13 +77,8 @@ const TestTree = props => {
     const [selectKeys, setSelectKeys] = React.useState([]);
 
     return (
-        <div className="flex flex-row">
-            <div className="w-320 mr-20 h-screen">
-                <SearchableTree treeData={treeData} selectKeys={selectKeys} />
-            </div>
-            <div className="w-320 h-screen">
-                <SearchableTree checkable treeData={treeData} selectKeys={selectKeys} />
-            </div>
+        <div className="flex flex-row w-256">
+            <Picker />
         </div>
     );
 };

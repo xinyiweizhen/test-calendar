@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {makeAppStyles, useDayUtils} from '@smart-link/context';
-import clsx from 'clsx';
 import {Divider, Paper, Dialog, DialogTitle, DialogContent, Typography, IconButton} from '@smart-link/core/material-ui';
 import CloseIcon from '@material-ui/icons/Close';
 import MonthDay from './MonthDay';
@@ -33,7 +32,7 @@ const MonthDays = React.memo(props => {
 
     const handleSelectSlot = slot => {
         console.log(slot);
-        // setOpen(true);
+        setOpen(true);
     };
 
     const handleClose = e => {
@@ -51,13 +50,7 @@ const MonthDays = React.memo(props => {
             {weeks.map((week, rowIndex) => (
                 <div key={`week-${week[0]}`} role="row" className={classes.row}>
                     <div className="week-content">
-                        <BlockCells
-                            onSelectSlot={handleSelectSlot}
-                            open={open}
-                            setOpen={setOpen}
-                            week={week}
-                            container={getContainer}
-                        />
+                        <BlockCells onSelectSlot={handleSelectSlot} open={open} week={week} container={getContainer} />
                         <div className="weekday-header">{week.map(renderHeadingCell)}</div>
                         {/* TODO show event */}
                     </div>

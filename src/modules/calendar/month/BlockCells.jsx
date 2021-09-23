@@ -1,15 +1,15 @@
 import React from 'react';
 import clsx from 'clsx';
 import {withStyles} from '@smart-link/context/material-styles';
-import {Portal, ClickAwayListener} from '@smart-link/core/material-ui';
+import {Portal} from '@smart-link/core/material-ui';
 import Selection, {getBoundsForNode, isEvent} from '../Selection';
 import {dateCellSelection, getSlotAtX, pointInBox} from '../selections';
 
 class BlockCells extends React.Component {
-    constructor(props, context) {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            selecting: props.open,
+            selecting: false,
             hidden: false,
         };
         this.cellRef = React.createRef();
@@ -17,6 +17,17 @@ class BlockCells extends React.Component {
 
     componentDidMount() {
         this.selectable();
+    }
+
+    componentDidUpdate(prevProps) {
+        const {open} = this.props;
+        // If the open of the parent component is false, the selection of the child component is updated to false
+        if (open !== prevProps.open && !open) {
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState({
+                selecting: open,
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -79,7 +90,6 @@ class BlockCells extends React.Component {
                 const nodeBox = getBoundsForNode(node);
                 ({startIdx, endIdx, hidden} = dateCellSelection(this.initial, nodeBox, box, length, null));
             }
-            console.log(startIdx, endIdx);
             this.setState({
                 selecting: true,
                 startIdx,
