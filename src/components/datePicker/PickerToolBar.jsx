@@ -1,10 +1,9 @@
 import React from 'react';
 import {makeStyles} from '@smart-link/context';
-import {SmartLinkIcon} from '@smart-link/core';
-import {IconButton} from '@smart-link/core/material-ui';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import clsx from 'clsx';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
 const PickerToolBar = React.memo(props => {
     const {text, expanded, toggle, onClickLeft, onClickRight} = props;
@@ -13,24 +12,24 @@ const PickerToolBar = React.memo(props => {
     return (
         <div className={classes.root}>
             <span className="label">{text}</span>
-            <span className={clsx('icon', expanded && 'invisible')}>
-                <IconButton onClick={onClickLeft}>
-                    <SmartLinkIcon name="KeyboardArrowLeft" className="w-20 h-20" />
-                </IconButton>
-            </span>
-            <span className={clsx('icon', expanded && 'invisible')}>
-                <IconButton onClick={onClickRight}>
-                    <SmartLinkIcon name="KeyboardArrowRight" className="w-20 h-20" />
-                </IconButton>
-            </span>
-            <span className="icon">
-                <IconButton onClick={toggle}>
-                    {expanded ? (
-                        <KeyboardArrowUpIcon className="w-20 h-20" />
-                    ) : (
-                        <KeyboardArrowDownIcon className="w-20 h-20" />
-                    )}
-                </IconButton>
+
+            {!expanded && (
+                <>
+                    <span className="icon" onClick={onClickLeft}>
+                        <KeyboardArrowLeftIcon className="w-20 h-20" />
+                    </span>
+                    <span className="icon" onClick={onClickRight}>
+                        <KeyboardArrowRightIcon className="w-20 h-20" />
+                    </span>
+                </>
+            )}
+
+            <span className="icon" onClick={toggle}>
+                {expanded ? (
+                    <KeyboardArrowUpIcon className="w-20 h-20" />
+                ) : (
+                    <KeyboardArrowDownIcon className="w-20 h-20" />
+                )}
             </span>
         </div>
     );
@@ -51,6 +50,18 @@ const useStyles = makeStyles(
             '& .label': {
                 flex: 1,
                 cursor: 'default',
+                fontSize: '13px',
+                lineHeight: '13px',
+            },
+            '& .icon': {
+                flex: 'none',
+                marginLeft: theme.spacing(2),
+                cursor: 'pointer',
+                padding: 4,
+                borderRadius: '50%',
+            },
+            '& .icon:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
             },
         },
         hidden: {

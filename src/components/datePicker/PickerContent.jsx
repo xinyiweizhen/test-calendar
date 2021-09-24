@@ -7,13 +7,7 @@ const PickerContent = React.memo(props => {
     const classes = useStyles();
 
     return (
-        <div
-            className={classes.root}
-            style={{
-                height: expanded ? '0px' : 'auto',
-                overflow: 'visible',
-            }}
-        >
+        <div className={classes.root}>
             {!expanded && (
                 <div className={classes.content}>
                     <DayPanel indexDate={indexDate} selectedDate={selectedDate} onChange={onChangeProp} />

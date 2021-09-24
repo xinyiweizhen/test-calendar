@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {makeAppStyles, useDayUtils} from '@smart-link/context';
+import {makeStyles, useDayUtils} from '@smart-link/context';
 import {Divider, Paper, Dialog, DialogTitle, DialogContent, Typography, IconButton} from '@smart-link/core/material-ui';
 import CloseIcon from '@material-ui/icons/Close';
 import MonthDay from './MonthDay';
@@ -88,7 +88,7 @@ const MonthDays = React.memo(props => {
     );
 });
 
-const useStyles = makeAppStyles(
+const useStyles = makeStyles(
     theme => ({
         rows: {
             flex: '0 0 auto',

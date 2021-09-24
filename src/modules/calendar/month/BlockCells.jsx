@@ -1,9 +1,8 @@
 import React from 'react';
-import clsx from 'clsx';
 import {withStyles} from '@smart-link/context/material-styles';
-import {Portal} from '@smart-link/core/material-ui';
 import Selection, {getBoundsForNode, isEvent} from '../Selection';
 import {dateCellSelection, getSlotAtX, pointInBox} from '../selections';
+import Transformer from '../components/Transformer';
 
 class BlockCells extends React.Component {
     constructor(props) {
@@ -127,39 +126,31 @@ class BlockCells extends React.Component {
         this.selector = null;
     };
 
+    getContainer = () => {
+        if (this.cellRef.current) {
+            return this.cellRef.current.parentNode.parentNode;
+        }
+        return null;
+    };
+
     render() {
         const {week, classes} = this.props;
         const {selecting, startIdx, endIdx, hidden} = this.state;
         const {length} = week;
-        const transformerStyle = {
-            top: 1,
-            left: `calc(${(startIdx / length) * 100}% + 5px)`,
-            width: `calc( ${
-                startIdx === endIdx ? (1 / length) * 100 : ((endIdx + 1 - startIdx) / length) * 100
-            }% - 10px)`,
-        };
 
         return (
             <div className={classes.root} ref={this.cellRef}>
-                {week.map((day, index) => {
+                {week.map(day => {
                     return <div key={day.toString()} />;
                 })}
-                {selecting ? (
-                    <Portal container={this.cellRef.current.parentNode.parentNode}>
-                        <div className={classes.monthTransformer}>
-                            <div className="_trigger resizer fast-create-event-wrapper">
-                                <div
-                                    className="month-transformer month-event-instance-wrapper"
-                                    style={transformerStyle}
-                                >
-                                    <div className="month-event-instance">
-                                        <div className="summary property">{hidden ? '' : '添加主题'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Portal>
-                ) : null}
+                <Transformer
+                    startIndex={startIdx}
+                    endIndex={endIdx}
+                    show={selecting}
+                    length={length}
+                    container={this.getContainer()}
+                    displaySummary={hidden}
+                />
             </div>
         );
     }
@@ -177,50 +168,7 @@ const style = theme => ({
             flex: 1,
             height: '100%',
         },
-        '& > $selected': {
-            backgroundColor: '#fff',
-        },
     },
-    monthTransformer: {
-        display: 'flex',
-        position: 'absolute',
-        top: 33,
-        height: 20,
-        width: '100%',
-        '& .month-transformer': {
-            position: 'absolute',
-            borderTopRightRadius: 2,
-            borderBottomRightRadius: 2,
-            zIndex: 1401,
-            top: 0,
-            left: 0,
-            height: '100%',
-            boxSizing: 'border-box',
-            cursor: 'pointer',
-            pointerEvents: 'auto',
-            '& .month-event-instance': {
-                color: theme.palette.common.white,
-                border: '0.5px solid',
-                borderColor: theme.palette.primary.main,
-                opacity: 0.9,
-                borderRadius: 1,
-                height: 22,
-                fontSize: '10px',
-                padding: '0 0 0 5px',
-                width: '100%',
-                '& > div': {
-                    fontSize: '12px',
-                    boxSizing: 'border-box',
-                    lineHeight: '20px',
-                    height: '20px',
-                    whiteSpace: 'nowrap',
-                    wordBreak: 'break-all',
-                    fontWeight: 600,
-                },
-            },
-        },
-    },
-    selected: {},
 });
 
 export default withStyles(style)(BlockCells);

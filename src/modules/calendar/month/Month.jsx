@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {makeAppStyles, useDayUtils, useEnhancedEffect} from '@smart-link/context';
 import clsx from 'clsx';
 import {SmartLinkAnimateGroup} from '@smart-link/core';
-import {Paper, Dialog, DialogTitle, DialogContent, DialogActions, Divider} from '@smart-link/core/material-ui';
 import MonthHeader from './Header';
 import MonthDays from './MonthDays';
 import {animationDirection} from '../constants';

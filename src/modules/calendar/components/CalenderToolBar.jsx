@@ -5,7 +5,6 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {useHistory, useLocation} from 'react-router';
 import {views} from '../constants';
-// eslint-disable-next-line import/named
 import {isValidView} from '../utils';
 
 const StyledToggleButtonGroup = withStyles(theme => ({
@@ -21,10 +20,15 @@ const StyledToggleButtonGroup = withStyles(theme => ({
     },
 }))(ToggleButtonGroup);
 
+const StyledToggleButton = withStyles(theme => ({
+    root: {
+        padding: '5px 20px',
+    },
+}))(ToggleButton);
+
 const CalenderToolBar = React.memo(props => {
     const classes = useStyles();
-    const {view} = props;
-
+    const {view, onTodayClick} = props;
     const history = useHistory();
     const location = useLocation();
 
@@ -36,11 +40,15 @@ const CalenderToolBar = React.memo(props => {
             }
         }
     };
+
+    const handleTodayClick = _event => {
+        onTodayClick && onTodayClick(_event);
+    };
     return (
         <AppBar position="static" className={classes.appBar}>
             <Toolbar>
                 <div className={classes.navLabel}>
-                    <Button size="medium" variant="outlined">
+                    <Button size="medium" variant="outlined" onClick={handleTodayClick}>
                         今天
                     </Button>
                     <IconButton>
@@ -52,15 +60,15 @@ const CalenderToolBar = React.memo(props => {
                 </div>
                 <div className={classes.paper}>
                     <StyledToggleButtonGroup onChange={handleViewChange} value={view} exclusive aria-label="view">
-                        <ToggleButton value={views.DAY} aria-label="day view">
-                            日视图
-                        </ToggleButton>
-                        <ToggleButton value={views.WEEK} aria-label="week view">
-                            周视图
-                        </ToggleButton>
-                        <ToggleButton value={views.MONTH} aria-label="mouth view">
-                            月视图
-                        </ToggleButton>
+                        <StyledToggleButton value={views.DAY} aria-label="day view">
+                            日
+                        </StyledToggleButton>
+                        <StyledToggleButton value={views.WEEK} aria-label="week view">
+                            周
+                        </StyledToggleButton>
+                        <StyledToggleButton value={views.MONTH} aria-label="mouth view">
+                            月
+                        </StyledToggleButton>
                     </StyledToggleButtonGroup>
                 </div>
             </Toolbar>

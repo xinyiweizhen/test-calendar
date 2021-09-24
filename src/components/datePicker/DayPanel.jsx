@@ -35,7 +35,7 @@ const DayPanel = React.memo(props => {
                             const no = index !== week.length - 1;
                             const inCurrentMonth = dayUtils.isSameMonth(day, indexDate);
                             return (
-                                <>
+                                <React.Fragment key={day.toString()}>
                                     <div
                                         className={clsx('date', {
                                             [classes.otherMonth]: !inCurrentMonth,
@@ -47,7 +47,7 @@ const DayPanel = React.memo(props => {
                                         {dayUtils.format(day, 'dayOfMonth')}
                                     </div>
                                     {no && <div className="fill-date" />}
-                                </>
+                                </React.Fragment>
                             );
                         })}
                     </div>

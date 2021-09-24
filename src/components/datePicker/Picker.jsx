@@ -1,6 +1,6 @@
 import React from 'react';
 import {makeStyles, useDayUtils, useControlled} from '@smart-link/context';
-import {Accordion, AccordionSummary, AccordionDetails} from '@smart-link/core/material-ui';
+import {Paper} from '@smart-link/core/material-ui';
 import PickerToolBar from './PickerToolBar';
 import PickerContent from './PickerContent';
 
@@ -43,7 +43,7 @@ const Picker = React.memo(props => {
     };
 
     return (
-        <div className={classes.root}>
+        <Paper square className={classes.root}>
             <PickerToolBar
                 text={toolBarText}
                 onClickLeft={onClickLeft}
@@ -52,7 +52,7 @@ const Picker = React.memo(props => {
                 toggle={toggleExpanded}
             />
             <PickerContent expanded={expanded} indexDate={indexDate} selectedDate={selectedDate} onChange={onChange} />
-        </div>
+        </Paper>
     );
 });
 

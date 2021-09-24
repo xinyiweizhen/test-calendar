@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
-import {SmartLinkCalendar} from '@smart-link/core';
-import {makeAppStyles, useDayUtils} from '@smart-link/context';
+import React from 'react';
+import {makeStyles, useDayUtils} from '@smart-link/context';
+import {Divider, Paper} from '@smart-link/core/material-ui';
 import clsx from 'clsx';
 import {useParams} from 'react-router-dom';
 import VIEWS from './Views';
 import CalenderToolBar from './components/CalenderToolBar';
 import {isValidView} from './utils';
 import {views} from './constants';
+import Picker from '../../components/datePicker';
 
 const TestCalender = props => {
     const {className, style} = props;
@@ -21,9 +22,11 @@ const TestCalender = props => {
 
     return (
         <div className={clsx(classes.root, className)} style={style}>
-            <div>
-                <SmartLinkCalendar calendarType="date" elevation={0} />
-            </div>
+            <Paper square className={classes.tool}>
+                <Picker />
+                <Divider />
+                <div>aaaaaaaaa</div>
+            </Paper>
             <div className={classes.content}>
                 <CalenderToolBar view={view} />
                 <View indexDate={dayUtils.date()} />
@@ -39,7 +42,7 @@ const getView = view => {
     return VIEWS[view];
 };
 
-const useStyles = makeAppStyles(
+const useStyles = makeStyles(
     theme => ({
         root: {
             display: 'flex',
@@ -47,6 +50,12 @@ const useStyles = makeAppStyles(
             height: '100%',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
+        },
+        tool: {
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: 256,
+            height: '100%',
         },
         content: {
             display: 'flex',
